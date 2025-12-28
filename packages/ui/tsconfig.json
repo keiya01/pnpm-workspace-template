@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "declarationDir": "dist-types"
+  },
+  "include": ["src"],
+  "references": [
+    {
+      "path": "../shared"
+    },
+    {
+      "path": "../core"
+    }
+  ]
+}

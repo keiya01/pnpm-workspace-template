@@ -1,0 +1,17 @@
+{
+  "name": "ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.umd.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc && vite build && pnpm run bundle:types",
+    "bundle:types": "api-extractor run --local"
+  },
+  "dependencies": {
+    "core": "workspace:*",
+    "shared": "workspace:*"
+  }
+}

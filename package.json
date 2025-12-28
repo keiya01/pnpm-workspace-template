@@ -1,0 +1,23 @@
+{
+  "name": "workspace-test",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm -r run dev",
+    "build": "pnpm -r run build",
+    "preview": "pnpm -r run preview",
+    "lint": "oxlint",
+    "fmt": "oxfmt",
+    "build:types": "pnpm -r run build:types"
+  },
+  "devDependencies": {
+    "@microsoft/api-extractor": "^7.47.10",
+    "@types/node": "^25.0.3",
+    "oxfmt": "^0.20.0",
+    "oxlint": "^1.35.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4",
+    "vite-tsconfig-paths": "^6.0.3"
+  }
+}
