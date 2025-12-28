@@ -6,7 +6,6 @@ This repo experiments with a minimal monorepo using pnpm workspaces, TypeScript 
 - Deterministic builds: JS bundles in `dist/` and rolled-up types in `dist/index.d.ts`
 - Simple rules to switch between bundling dependencies vs externalizing them
 
-
 ## Overview
 
 - Workspace layout: `packages/*` for libraries, `apps/*` for runnable apps.
@@ -17,13 +16,11 @@ This repo experiments with a minimal monorepo using pnpm workspaces, TypeScript 
   - `dist-types/` — `.d.ts` emitted by `tsc`
   - `dist/index.d.ts` — single rolled-up `.d.ts` via `api-extractor`
 
-
 ## Layout
 
 - `pnpm-workspace.yaml`: includes `packages/*` and `apps/*`.
 - `packages/{core,shared,ui}`: libraries built in Vite library mode.
 - `apps/{app1,app2}`: Vite apps that import libraries via bare specifiers (`ui`, etc.).
-
 
 ## Development (alias-first)
 
@@ -54,7 +51,6 @@ This repo experiments with a minimal monorepo using pnpm workspaces, TypeScript 
 - Run all dev servers: `pnpm dev` (runs `pnpm -r run dev`; only apps define `dev`).
 
 This means during development, `import { ... } from 'ui'` resolves to `packages/ui/src`, not to built output.
-
 
 ## TypeScript Project References
 
@@ -92,7 +88,10 @@ This means during development, `import { ... } from 'ui'` resolves to `packages/
   ```json
   {
     "extends": "../../tsconfig.json",
-    "compilerOptions": { "noEmit": true, "composite": false },
+    "compilerOptions": {
+      "noEmit": true,
+      "composite": false
+    },
     "references": [{ "path": "../../packages/ui" }]
   }
   ```
@@ -100,9 +99,11 @@ This means during development, `import { ... } from 'ui'` resolves to `packages/
 - For `api-extractor`, we intentionally clear `paths` via `tsconfig.api-extractor.json` so it resolves referenced packages as real dependencies rather than via TS path aliases:
 
   ```json
-  { "extends": "./tsconfig.json", "compilerOptions": { "paths": {} } }
+  {
+    "extends": "./tsconfig.json",
+    "compilerOptions": { "paths": {} }
+  }
   ```
-
 
 ## Building
 
@@ -120,7 +121,11 @@ Key configs:
   // packages/*/vite.config.ts
   export default defineConfig({
     build: {
-      lib: { entry: 'src/index.ts', name: 'Lib', fileName: 'index' },
+      lib: {
+        entry: 'src/index.ts',
+        name: 'Lib',
+        fileName: 'index'
+      },
     },
   });
   ```
@@ -130,10 +135,12 @@ Key configs:
   ```json
   {
     "mainEntryPointFilePath": "<projectFolder>/dist-types/src/index.d.ts",
-    "dtsRollup": { "enabled": true, "publicTrimmedFilePath": "<projectFolder>/dist/index.d.ts" }
+    "dtsRollup": {
+      "enabled": true,
+      "publicTrimmedFilePath": "<projectFolder>/dist/index.d.ts"
+    }
   }
   ```
-
 
 ## Externalizing Dependencies (optional)
 
@@ -146,7 +153,11 @@ If you want a dependency to be external (not bundled):
   ```ts
   export default defineConfig({
     build: {
-      lib: { entry: 'src/index.ts', name: 'Lib', fileName: 'index' },
+      lib: {
+        entry: 'src/index.ts',
+        name: 'Lib',
+        fileName: 'index'
+      },
       rollupOptions: {
         external: ['react', 'core', 'shared']
       }
@@ -155,12 +166,10 @@ If you want a dependency to be external (not bundled):
   ```
 
 - For types, you can skip `api-extractor` and point the package’s `types` to the emitted entry from `tsc`:
-
   - Remove the `bundle:types` step from `build` (or don’t run it).
   - Set `"types": "dist-types/src/index.d.ts"` in `package.json`.
 
 This way the library does not inline the external dependency’s code or types; consumers must provide it.
-
 
 ## Adding a New Package
 
@@ -172,7 +181,6 @@ This way the library does not inline the external dependency’s code or types; 
 - Update root `vite.config.dev.ts` aliases and root `tsconfig.json` `paths` with the new package name → `packages/<name>/src`.
 - If other packages depend on it, add a workspace dependency (`"<name>": "workspace:*"`) and a TS `reference`.
 
-
 ## Commands
 
 - Install: `pnpm install`
@@ -180,11 +188,9 @@ This way the library does not inline the external dependency’s code or types; 
 - Build all: `pnpm build`
 - Preview an app: `pnpm --filter ./apps/app1 preview`
 
-
 ## Notes & Gotchas
 
 - Keep root `tsconfig.json` `paths` and root `vite.config.dev.ts` aliases in sync.
 - `api-extractor` assumes `tsc` wrote declarations to `dist-types/` with the same folder structure as `src/`.
 - `pnpm -r` runs in workspace topological order, so library builds complete before app builds.
 - If you externalize a dependency, make sure the consumer environment provides it (e.g., mark it as a dependency/peerDependency in `package.json`).
-
